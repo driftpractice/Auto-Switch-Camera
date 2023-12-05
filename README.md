@@ -2,6 +2,10 @@
 Assetto Corsa - Takeyoh's Auto Switch Camera
 
 
+# how to download the entire repo/all files to your PC
+
+
+# How to install to Assetto Corsa
 
 
 
