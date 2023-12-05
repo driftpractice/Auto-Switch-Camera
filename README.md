@@ -2,7 +2,8 @@
 Assetto Corsa - Takeyoh's Auto Switch Camera
 
 
-# how to download the entire repo/all files to your PC
+# How to download the entire repo/all files to your PC
+![image](https://github.com/driftpractice/Auto-Switch-Camera/assets/152949923/76619767-31d2-465f-a048-e7f9cc49dd33)
 
 
 # How to install to Assetto Corsa
