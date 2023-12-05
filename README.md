@@ -13,7 +13,15 @@ Assetto Corsa - Takeyoh's Auto Switch Camera
 ![image](https://github.com/driftpractice/Auto-Switch-Camera/assets/152949923/ec780290-6b9a-4208-bec0-8a561a63d8ce)
 
 3) Copy the entire 'tky_camera' folder to:
+   
    [Your team install folder location]\SteamLibrary\steamapps\common\assettocorsa\apps\lua\
+
+4) Start your game; while in game move mose to right-side of screen to bring up menu.  Search for 'Automatic Camera Angle Switch'.
+
+![image](https://github.com/driftpractice/Auto-Switch-Camera/assets/152949923/59e9a7ac-2d6e-4fb3-bfe1-77f330f8af5f)
+
+5) Read Takeyoh's 'readme.txt' included in the 'tky_camera' directory (scroll to the bottom for English instructions).
+   
 
 # Credits and the Original Creator's details
 The original creator of the 'Auto Switch Camera' is Takeyoh.  You can find his YouTube channel here:
