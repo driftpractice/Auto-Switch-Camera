@@ -1,6 +1,12 @@
 # Takeyoh's Auto-Switch-Camera
 Assetto Corsa - Takeyoh's Auto Switch Camera
 
+History:
+2023Dec04 - Code posted to GitHub.  tky_camera now includes:
+1) Unique Random Camera Angle selection in User Interface.
+2) An additional 25 camera angles added to the camera list.
+
+
 
 # How to download the entire repo/all files to your PC
 ![image](https://github.com/driftpractice/Auto-Switch-Camera/assets/152949923/76619767-31d2-465f-a048-e7f9cc49dd33)
