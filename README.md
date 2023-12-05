@@ -51,7 +51,9 @@ racedepartment.com/members/takeyoh.2295553
 
 # Code also taken from Ilja Jusupov aka x4fab
 x4fab's 'Chaser Camera' \ base camera as part of CSP's LUA (?)
+
 He can be found here:
+
 https://www.patreon.com/x4fab/posts
 
 [Your Asseto Corsa install directory]\SteamLibrary\steamapps\common\assettocorsa\extension\lua\chaser-camera\base\camera.lua
