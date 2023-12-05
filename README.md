@@ -30,7 +30,7 @@ www.youtube.com/@takeyoh
 Takeyoh's original video demonstrating his camera:
 https://youtu.be/TCKzu5ITnQ4?si=c_RrsNixeMkm_gAD
 
-He can also bne found at:
+He can also be found at:
 takeyohのおぼえがき
 takeyoh.hatenablog.com
 
