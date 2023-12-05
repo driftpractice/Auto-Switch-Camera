@@ -1,8 +1,6 @@
 # Takeyoh's Auto-Switch-Camera
 Assetto Corsa - Takeyoh's Auto Switch Camera
 
-![image](https://github.com/driftpractice/Auto-Switch-Camera/assets/152949923/3cb30556-4875-4031-89f8-85efed37585d)
-
 
 
 
@@ -23,3 +21,7 @@ twitter.com/takeyoh_k3x
 
 RD(takeyoh)
 racedepartment.com/members/takeyoh.2295553
+
+# Creator's Permission to post to GitHub
+![image](https://github.com/driftpractice/Auto-Switch-Camera/assets/152949923/3cb30556-4875-4031-89f8-85efed37585d)
+
