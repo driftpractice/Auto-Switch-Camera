@@ -1,0 +1,12 @@
+{
+  { active = true, angle = 1 },
+  { active = true, angle = 2 },
+  { active = true, angle = 3 },
+  { active = true, angle = 4 },
+  { active = true, angle = 4 },
+  { active = true, angle = 5 },
+  { active = true, angle = 7 },
+  { active = true, angle = 8 },
+  { active = true, angle = 9 },
+  { active = false, angle = 0 }
+}
