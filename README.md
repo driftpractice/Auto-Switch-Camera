@@ -8,7 +8,12 @@ Assetto Corsa - Takeyoh's Auto Switch Camera
 
 # How to install to Assetto Corsa
 
+1) Download the repo files to your PC and unzip to a temp folder.
+2) In the temp folder, locate the ''tky_camera' sub-folder: 
+![image](https://github.com/driftpractice/Auto-Switch-Camera/assets/152949923/ec780290-6b9a-4208-bec0-8a561a63d8ce)
 
+3) Copy the entire 'tky_camera' folder to:
+   [Your team install folder location]\SteamLibrary\steamapps\common\assettocorsa\apps\lua\
 
 # Credits and the Original Creator's details
 The original creator of the 'Auto Switch Camera' is Takeyoh.  You can find his YouTube channel here:
