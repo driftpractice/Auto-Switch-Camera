@@ -9,6 +9,7 @@ History:
 Demonstration (note v-sync turned off during recording; hence screen tearing on certain camera angles):
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/0ancBlGblTw/0.jpg)](http://www.youtube.com/watch?v=0ancBlGblTw "Assetto Corsa - Takeyoh's Auto Switch Camera - With unique random 36 angle rotation added")
 
+https://www.youtube.com/@driftpractice789
 
 # How to download the entire repo/all files to your PC
 ![image](https://github.com/driftpractice/Auto-Switch-Camera/assets/152949923/76619767-31d2-465f-a048-e7f9cc49dd33)
