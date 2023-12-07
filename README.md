@@ -22,7 +22,7 @@ History:
    
    [Your Assetto Corsa install folder location]\SteamLibrary\steamapps\common\assettocorsa\apps\lua\
 
-4) Start your game; while in game move mose to right-side of screen to bring up menu.  Search for 'Automatic Camera Angle Switch'.
+4) Start your game; while in game move mouse to right-side of screen to bring up menu.  Search for 'Automatic Camera Angle Switch'.
 
 ![image](https://github.com/driftpractice/Auto-Switch-Camera/assets/152949923/59e9a7ac-2d6e-4fb3-bfe1-77f330f8af5f)
 
