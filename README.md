@@ -20,7 +20,7 @@ History:
 
 3) Copy the entire 'tky_camera' folder to:
    
-   [Your team install folder location]\SteamLibrary\steamapps\common\assettocorsa\apps\lua\
+   [Your Assetto Corsa install folder location]\SteamLibrary\steamapps\common\assettocorsa\apps\lua\
 
 4) Start your game; while in game move mose to right-side of screen to bring up menu.  Search for 'Automatic Camera Angle Switch'.
 
