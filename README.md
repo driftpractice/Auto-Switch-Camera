@@ -2,6 +2,7 @@
 Assetto Corsa - Takeyoh's Auto Switch Camera
 
 History:
+2023Dec31 - Added InitialD inspired camera angles (total camera angles at 54).
 2023Dec04 - Code posted to GitHub.  tky_camera now includes:
 1) Unique Random Camera Angle selection in User Interface.
 2) An additional 25 camera angles added to the camera list.
