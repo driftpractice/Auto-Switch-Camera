@@ -41,12 +41,14 @@ local rndCamAngles = false
 math.randomseed(os.time())
 local prevCarDistance = 0
 
+
 local staticCarPos = vec3(0,0,0)
 local staticCarDir = vec3(0,0,0)
 local staticCarUp = vec3(0,0,0)
 local firstPass = true
 local rndList = {}
-
+rndList[0] = ""
+local testString = ""
 
 
 
@@ -93,9 +95,32 @@ local titles ={
   "InitialD Rear Drop Pan Zoom", --34
   "InitialD Front Drop Pan Zoom", --35
   "InitialD Drive Away", --36
+  "InitialD Front Back Left Side",  --37
+  "InitialD Back Front Right Side", --38
+  "Micro Machines", --39
+  "Blimp", --40
+  "Blimp Zoom In", --41
+  "InitialD Rear Wheel Look Forward", --42
+  "InitialD Front Corner Hood", --43
+  "InitialD Front Corner Light", --44
+  "InitialD Rear Corner Light", --45
+  "Rear Slide", --46
+  "Rear Rotate", --47
+  "Movie Cabin", --48
+  "InitialD Front Lights Left Right Back", --49
+  "InitialD Rear Lights Left Right Back", --50
+  "InitialD Rear Leader Pick Up Pace", --51
+  "InitialD Rear Chaser Catch Up", --52
+  "InitialD Front Leader Pick Up Pace", --53
+  "InitialD Front Chaser Catch Up", --54
+  
   "test"
+  
 }
 titles[0] = ""
+
+
+
 
 local carList = {}
 function carListUpdate(exceptAICarFlag)
@@ -420,7 +445,7 @@ function positionBackseat(sp, carDir, counter, time)
 	  -- Get AC camera parameters with some corrections to be somewhat compatible:
 	 
 	  local distance = 1
-	  local height = 1.1 
+	  local height = ac.getCar(carID).driverEyesPosition.y  --1.1 
 	  
 
 	  -- Get car position and vectors:
@@ -495,7 +520,7 @@ function positionRearAxle(sp, carDir, counter, time)
 
 	  -- Get AC camera parameters with some corrections to be somewhat compatible:
 	 
-	  local distance = 2.5
+	  local distance = ac.getCar(carID).aabbSize.z *0.60 --2.5
 	  local height = 0.1 
 	   
 
@@ -572,7 +597,7 @@ function positionFrontAxle(sp, carDir, counter, time)
 
 	  -- Get AC camera parameters with some corrections to be somewhat compatible:
 	 
-	  local distance = -2.8
+	  local distance =  -ac.getCar(carID).aabbSize.z *0.70  -- -2.8
 	  local height = 0.12
 	   
 
@@ -1083,7 +1108,7 @@ cameraLookPosOffset = vec3(0,0,0)  -- controls direction offset??? don't use it,
 	  local cameraLookPosOffset = carDir * cameraLookPosOffset + carUp * (1 - math.abs(1 ))  -- abs value also controls something (lookDirection.val)
 	  local cameraLook = (carPos + cameraLookPosOffset - cameraPos ):normalize()
 
-ac.debug ('ac.getCameraPosition', ac.getCameraPosition() )
+	--ac.debug ('ac.getCameraPosition', ac.getCameraPosition() )
 
 	  -- Use for `pitchAngle`:
 	  cameraLook:rotate(quat.fromAngleAxis(math.radians(pitchAngle), carRight ))
@@ -1107,7 +1132,7 @@ function positionDash(sp, carDir, counter, time)
 	  -- Get AC camera parameters with some corrections to be somewhat compatible:
 	 
 	  local distance = 0
-	  local height = 1
+	  local height = ac.getCar(carID).driverEyesPosition.y  --1
 	  local xAxisRadial = 0   -- 0 is dead centre
 	  local xAxis = 0  --  -0.3   -- 0 centre, offsets camera x axis
 
@@ -1205,7 +1230,7 @@ function positionIDFrontCabinRear(sp, carDir, counter, time)
 	  -- Get AC camera parameters with some corrections to be somewhat compatible:
 	 
 	  local distance = 0  -- don't change this here for this view
-	  local height = 1
+	  local height = ac.getCar(carID).driverEyesPosition.y  --1
 	  local xAxisRadial = 0   -- 0 is dead centre
 	  local xAxis = 0  --  -0.3   -- 0 centre, offsets camera x axis
 
@@ -1240,11 +1265,12 @@ function positionIDFrontCabinRear(sp, carDir, counter, time)
 	local distanceOffset = ac.getCar(carID).aabbSize.z * 1 * (1- 2*counter/time)
 
 	
-	if (ac.getCar(carID).aabbSize.z * 1 * (1- 2*counter/time)) > 4 then
+	--if (ac.getCar(carID).aabbSize.z * 1 * (1- 2*counter/time)) > 4 then
+	if counter >=18 then
 		--don't update distance any more, just hold position
 		
 		if prevCarDistance == 0 then -- this is the very first time using the view
-			prevCarDistance = distance  - distanceOffset * 0.96   -- specific offset; not too much/little offset
+			prevCarDistance = distance  - distanceOffset --* 0.96   -- specific offset; not too much/little offset
 		end
 		
 		distance = prevCarDistance
@@ -1334,7 +1360,7 @@ function positionIDRearCabinFront(sp, carDir, counter, time)
 	  -- Get AC camera parameters with some corrections to be somewhat compatible:
 	 
 	  local distance = 0  -- don't change this here for this view
-	  local height = 1
+	  local height = ac.getCar(carID).driverEyesPosition.y  --1
 	  local xAxisRadial = 0   -- 0 is dead centre
 	  local xAxis = 0  --  -0.3   -- 0 centre, offsets camera x axis
 
@@ -1367,14 +1393,16 @@ function positionIDRearCabinFront(sp, carDir, counter, time)
 	
 	--distance = distance  - ac.getCar(carID).aabbSize.z * <SPEED_SCALE> * (1- <distance from car>*counter/time)
 	-- multiply by -1 to move the camera forward
-	local distanceOffset = -1 * ac.getCar(carID).aabbSize.z * 1 * (1- 2*counter/time)
+	local distanceOffset = -1 * ac.getCar(carID).aabbSize.z/1.15 * 1 * (1- 2*counter/time)
 
 	
-	if (ac.getCar(carID).aabbSize.z * 1 * (1- 2*counter/time)) > 4 then
+	--if (ac.getCar(carID).aabbSize.z * 1 * (1- 2*counter/time)) > 4 then
+	if counter >= 20 then
 		--don't update distance any more, just hold position
 		
 		if prevCarDistance == 0 then -- this is the very first time using the view
-			prevCarDistance = distance   - distanceOffset  * 0.96   -- specific offset; not too much/little offset
+			prevCarDistance = distance   - distanceOffset  --* 0.96   -- specific offset; not too much/little offset
+			--ac.debug('got here', true)
 		end
 		
 		distance = prevCarDistance
@@ -1692,7 +1720,7 @@ function positionRearWindow(sp, carDir, counter, time)
 	  -- Get AC camera parameters with some corrections to be somewhat compatible:
 	 
 	  local distance = 0.25  -- don't change this here for this view
-	  local height = 1
+	  local height = ac.getCar(carID).driverEyesPosition.y --1
 	  local xAxisRadial = 0   -- 0 is dead centre
 	  local xAxis = 0 --3  --  -0.3   -- 0 centre, offsets camera x axis
 
@@ -2510,7 +2538,810 @@ function positionIDDriveAway(sp, carDir, counter, time)
 
 end
 
-function directionIDDriveAway(sp, cp, shakePower, counter, time)
+-- InitialD Front to Back Left Side
+function positionIDFrontBackLeft(sp, carDir, counter, time)
+	-- Will be called each frame:
+	-- Note: `dt` is time passed since last frame, `cameraIndex` is 1 or 2, depending on which camera is
+	-- chosen.				
+
+	  smoothing.setDT(globalDT)
+
+	  -- Get AC camera parameters with some corrections to be somewhat compatible:
+	 
+	  local distance = -2.5  -- don't change this here for this view
+	  local height = 1.5
+	  local xAxisRadial = 0   -- 0 is dead centre
+	  local xAxis = -2.5 --3  --  -0.3   -- 0 centre, offsets camera x axis
+
+	  -- Get car position and vectors:
+	  local carPos = ac.getCar(carID).position --  ac.getCarPosition()
+	  local carDir = ac.getCar(carID).look  --ac.getCarDirection()
+	  local carUp = ac.getCar(carID).up  --ac.getCarUp()
+	  local carRight = math.cross(carDir, carUp):normalize()
+
+
+	  -- Normalize car velocity:
+	  local carVelocityDir = math.normalize(ac.getCar(carID).velocity + carDir * 0.01)
+
+
+
+	  -- Get rotation coefficient, from -1 to 1, based on X-component of local velocity (that’s what dot is for)
+	  -- and taking absolute speed into account as well:
+	  local velocityX = math.clamp(math.dot(carRight, carVelocityDir) * math.pow(#ac.getCar(carID).velocity, 0.5) / 10, -1, 1)
+
+	  -- Camera angle for given coefficient:
+	  cameraIndex = 1  -- have to set it to 1 or 2
+	  local cameraAngle = -velocityX * math.rad(maximumCameraAngle[cameraIndex])
+
+
+	  -- Sine and cosine for camera angle
+	  local sin, cos = math.sin(cameraAngle), math.cos(cameraAngle)
+
+
+	  -- Set camera position:
+
+	local distanceOffset = ac.getCar(carID).aabbSize.z/6 * (1- 2.5*counter/time)
+	
+
+	-- drop pan zoom
+	--xAxis = xAxis - distanceOffset/4
+	
+	if firstPass == true then
+		firstPass = false
+	else -- 2nd time around
+		distance = distance - distanceOffset*12
+	end
+	--height = height + distanceOffset/1.8
+	
+	
+	return ( carPos 
+		+ (carRight * sin - carDir * cos) * ( distance    )
+		+ vec3(xAxisRadial, height, 0) 
+		+ (carRight * cos - carDir * sin) * xAxis  --orig cos cos
+		
+		)
+
+end
+
+
+-- InitialD Back to Front Right Side
+function positionIDBackFrontRight(sp, carDir, counter, time)
+	-- Will be called each frame:
+	-- Note: `dt` is time passed since last frame, `cameraIndex` is 1 or 2, depending on which camera is
+	-- chosen.				
+
+	  smoothing.setDT(globalDT)
+
+	  -- Get AC camera parameters with some corrections to be somewhat compatible:
+	 
+	  local distance = 2.5  -- don't change this here for this view
+	  local height = 1.5
+	  local xAxisRadial = 0   -- 0 is dead centre
+	  local xAxis = 2.5 --3  --  -0.3   -- 0 centre, offsets camera x axis
+
+	  -- Get car position and vectors:
+	  local carPos = ac.getCar(carID).position --  ac.getCarPosition()
+	  local carDir = ac.getCar(carID).look  --ac.getCarDirection()
+	  local carUp = ac.getCar(carID).up  --ac.getCarUp()
+	  local carRight = math.cross(carDir, carUp):normalize()
+
+
+	  -- Normalize car velocity:
+	  local carVelocityDir = math.normalize(ac.getCar(carID).velocity + carDir * 0.01)
+
+
+
+	  -- Get rotation coefficient, from -1 to 1, based on X-component of local velocity (that’s what dot is for)
+	  -- and taking absolute speed into account as well:
+	  local velocityX = math.clamp(math.dot(carRight, carVelocityDir) * math.pow(#ac.getCar(carID).velocity, 0.5) / 10, -1, 1)
+
+	  -- Camera angle for given coefficient:
+	  cameraIndex = 1  -- have to set it to 1 or 2
+	  local cameraAngle = -velocityX * math.rad(maximumCameraAngle[cameraIndex])
+
+
+	  -- Sine and cosine for camera angle
+	  local sin, cos = math.sin(cameraAngle), math.cos(cameraAngle)
+
+
+	  -- Set camera position:
+
+	local distanceOffset = ac.getCar(carID).aabbSize.z/6 * (1- 2.5*counter/time)
+	
+
+	-- drop pan zoom
+	--xAxis = xAxis - distanceOffset/4
+	
+	if firstPass == true then
+		firstPass = false
+	else -- 2nd time around
+		distance = distance + distanceOffset*12
+	end
+	--height = height + distanceOffset/1.8
+	
+	
+	return ( carPos 
+		+ (carRight * sin - carDir * cos) * ( distance    )
+		+ vec3(xAxisRadial, height, 0) 
+		+ (carRight * cos - carDir * sin) * xAxis  --orig cos cos
+		
+		)
+
+end
+
+
+
+-- Micro Machines view
+function positionMicroMachines(sp, carDir, counter, time)
+	local lx,ly,lz
+  
+  lx = sp.x + 10 --5
+  ly = sp.y + 15 --+ ac.getCar(carID).driverEyesPosition.y
+  lz = sp.z + 15  --- 3.5
+  
+  return vec3(lx, ly, lz)
+	
+
+end
+
+-- Blimp view
+function positionBlimp(sp, carDir, counter, time)
+	local lx,ly,lz
+  
+  lx = sp.x + 5 --5
+  ly = sp.y + 75 --+ ac.getCar(carID).driverEyesPosition.y
+  lz = sp.z + 15  --- 3.5
+  
+  return vec3(lx, ly, lz)
+	
+
+end
+
+-- Blimp Zoom In view
+function positionBlimpZoomIn(sp, carDir, counter, time)
+	local lx,ly,lz
+    local distanceOffset = -1 * ac.getCar(carID).aabbSize.z * 25 *counter/time
+  
+	
+  ly = sp.y + 75 + distanceOffset
+  
+  if ly < sp.y+5 then
+     -- keep ly the same
+	 ly=sp.y + 5
+  end
+  
+  lx = sp.x + 5 --5   
+  lz = sp.z + 15  --- 3.5
+  
+  return vec3(lx, ly, lz)	
+
+end
+
+
+
+
+function positionIDRearWheelForward(sp, carDir, counter, time)
+	-- Will be called each frame:
+	-- Note: `dt` is time passed since last frame, `cameraIndex` is 1 or 2, depending on which camera is
+	-- chosen.				
+
+	  smoothing.setDT(globalDT)
+
+	  -- Get AC camera parameters with some corrections to be somewhat compatible:
+	 
+	  local distance = 0.5 --0.75
+	  local height = 0.5
+	  local xAxisRadial = 0  -- (if you use this the camera will shift around oscillate, applies in radial fashion)
+	  local xAxis = 1.5--1.75   -- 0 is dead centre 
+
+	  -- Get car position and vectors:
+	  local carPos = ac.getCar(carID).position --  ac.getCarPosition()
+	  local carDir = ac.getCar(carID).look  --ac.getCarDirection()
+	  local carUp = ac.getCar(carID).up  --ac.getCarUp()
+	  local carRight = math.cross(carDir, carUp):normalize()
+
+
+
+	  -- Normalize car velocity:
+	  local carVelocityDir = math.normalize(ac.getCar(carID).velocity + carDir * 0.01)
+
+
+
+	  -- Get rotation coefficient, from -1 to 1, based on X-component of local velocity (that’s what dot is for)
+	  -- and taking absolute speed into account as well:
+	  local velocityX = math.clamp(math.dot(carRight, carVelocityDir) * math.pow(#ac.getCar(carID).velocity, 0.5) / 10, -1, 1)
+
+	  -- Camera angle for given coefficient:
+	  cameraIndex = 1  -- have to set it to 1 or 2
+	  local cameraAngle = -velocityX * math.rad(maximumCameraAngle[cameraIndex])
+
+
+	  -- Sine and cosine for camera angle
+	  local sin, cos = math.sin(cameraAngle), math.cos(cameraAngle)
+
+
+	  -- Set camera position:
+
+
+	return ( carPos 
+		+ (carRight * sin - carDir * cos) * distance
+		+ vec3(xAxisRadial, height, 0) 
+		+ (carRight * cos - carDir * cos) * xAxis
+		)
+
+end
+
+function directionIDRearWheelForward(sp, cp, shakePower)
+	
+	
+	-- Get car position and vectors:
+	  local carPos = ac.getCar(carID).position --  ac.getCarPosition()
+	  local carDir = ac.getCar(carID).look  --ac.getCarDirection()
+	  local carUp = ac.getCar(carID).up  --ac.getCarUp()
+	  local carRight = math.cross(carDir, carUp):normalize()
+	
+	
+	local pitchAngle = 0 -- -47.5  --0   -- pitch (angle up/down) in degrees  180 forward, 0 backward (at front of car)
+	
+	
+
+	cameraLookPosOffset = vec3(0,0,0)  -- controls direction offset??? don't use it, causes camera to sudden change angle
+
+
+	-- Normalize car velocity:
+	  local carVelocityDir = math.normalize(ac.getCar(carID).velocity + carDir * 0.01)
+
+	  -- Get rotation coefficient, from -1 to 1, based on X-component of local velocity (that’s what dot is for)
+	  -- and taking absolute speed into account as well:
+	  local velocityX = math.clamp(math.dot(carRight, carVelocityDir) * math.pow(#ac.getCar(carID).velocity, 0.5) / 10, -1, 1)
+
+	  -- Camera angle for given coefficient:
+	  cameraIndex = 1  -- have to set it to 1 or 2
+	  local cameraAngle = -velocityX * math.rad( -25)    -- use to change xaxis
+	-- Sine and cosine for camera angle
+		local sin, cos = math.sin(cameraAngle), math.cos(cameraAngle)
+	-- Set camera position:
+		local cameraPos = carPos + (carRight * sin - carDir * cos) * 1  -- (last value 1 is distance)
+    
+
+	  -- Find camera look
+	  local cameraLookPosOffset = carDir * cameraLookPosOffset + carUp * (1 - math.abs(1 ))  -- abs value also controls something (lookDirection.val)
+	  local cameraLook = (carPos + cameraLookPosOffset - cameraPos ):normalize()
+
+
+	  -- Use for `pitchAngle`:
+	  cameraLook:rotate(quat.fromAngleAxis(math.radians(pitchAngle), carRight))
+
+	  -- Set camera look:
+	
+	  
+	  return cameraLook
+	
+end
+
+
+
+
+
+function positionIDFrontCornerHood(sp, carDir, counter, time)
+	-- Will be called each frame:
+	-- Note: `dt` is time passed since last frame, `cameraIndex` is 1 or 2, depending on which camera is
+	-- chosen.				
+
+	  smoothing.setDT(globalDT)
+
+	  -- Get AC camera parameters with some corrections to be somewhat compatible:
+	 
+	  local distance = -2 --0.75
+	  local height = 1.5
+	  local xAxisRadial = 0  -- (if you use this the camera will shift around oscillate, applies in radial fashion)
+	  local xAxis = 1.25 --1.75   -- 0 is dead centre 
+
+	  -- Get car position and vectors:
+	  local carPos = ac.getCar(carID).position --  ac.getCarPosition()
+	  local carDir = ac.getCar(carID).look  --ac.getCarDirection()
+	  local carUp = ac.getCar(carID).up  --ac.getCarUp()
+	  local carRight = math.cross(carDir, carUp):normalize()
+
+
+
+	  -- Normalize car velocity:
+	  local carVelocityDir = math.normalize(ac.getCar(carID).velocity + carDir * 0.01)
+
+
+
+	  -- Get rotation coefficient, from -1 to 1, based on X-component of local velocity (that’s what dot is for)
+	  -- and taking absolute speed into account as well:
+	  local velocityX = math.clamp(math.dot(carRight, carVelocityDir) * math.pow(#ac.getCar(carID).velocity, 0.5) / 10, -1, 1)
+
+	  -- Camera angle for given coefficient:
+	  cameraIndex = 1  -- have to set it to 1 or 2
+	  local cameraAngle = -velocityX * math.rad(maximumCameraAngle[cameraIndex])
+
+
+	  -- Sine and cosine for camera angle
+	  local sin, cos = math.sin(cameraAngle), math.cos(cameraAngle)
+
+
+	  -- Set camera position:
+
+
+	return ( carPos 
+		+ (carRight * sin - carDir * cos) * distance
+		+ vec3(xAxisRadial, height, 0) 
+		+ (carRight * cos - carDir * cos) * xAxis
+		)
+
+end
+
+function directionIDFrontCornerHood(sp, cp, shakePower)
+	
+	
+	-- Get car position and vectors:
+	  local carPos = ac.getCar(carID).position --  ac.getCarPosition()
+	  local carDir = ac.getCar(carID).look  --ac.getCarDirection()
+	  local carUp = ac.getCar(carID).up  --ac.getCarUp()
+	  local carRight = math.cross(carDir, carUp):normalize()
+	
+	
+	local pitchAngle = -75 ---80 -- -47.5  --0   -- pitch (angle up/down) in degrees  180 forward, 0 backward (at front of car)
+	
+	
+
+	cameraLookPosOffset = vec3(0,0,0)  -- controls direction offset??? don't use it, causes camera to sudden change angle
+
+
+	-- Normalize car velocity:
+	  local carVelocityDir = math.normalize(ac.getCar(carID).velocity + carDir * 0.01)
+
+	  -- Get rotation coefficient, from -1 to 1, based on X-component of local velocity (that’s what dot is for)
+	  -- and taking absolute speed into account as well:
+	  local velocityX = math.clamp(math.dot(carRight, carVelocityDir) * math.pow(#ac.getCar(carID).velocity, 0.5) / 10, -1, 1)
+
+	  -- Camera angle for given coefficient:
+	  cameraIndex = 1  -- have to set it to 1 or 2
+	  local cameraAngle = -velocityX * math.rad( -25)    -- use to change xaxis
+	-- Sine and cosine for camera angle
+		local sin, cos = math.sin(cameraAngle), math.cos(cameraAngle)
+	-- Set camera position:
+		local cameraPos = carPos + (carRight * sin - carDir * cos) * 1  -- (last value 1 is distance)
+    
+
+	  -- Find camera look
+	  local cameraLookPosOffset = carDir * cameraLookPosOffset + carUp * (1 - math.abs(0 ))  -- abs value also controls something (lookDirection.val)
+	  local cameraLook = (carPos + cameraLookPosOffset - cameraPos ):normalize()
+
+
+	  -- Use for `pitchAngle`:
+	  cameraLook:rotate(quat.fromAngleAxis(math.radians(pitchAngle), carRight))
+
+	  -- Set camera look:
+	
+	  
+	  return cameraLook
+	
+end
+
+
+
+function positionIDFrontCornerLight(sp, carDir, counter, time)
+	-- Will be called each frame:
+	-- Note: `dt` is time passed since last frame, `cameraIndex` is 1 or 2, depending on which camera is
+	-- chosen.				
+
+	  smoothing.setDT(globalDT)
+
+	  -- Get AC camera parameters with some corrections to be somewhat compatible:
+	 
+	  local distance = -4.5 --0.75
+	  local height = 1
+	  local xAxisRadial = 0  -- (if you use this the camera will shift around oscillate, applies in radial fashion)
+	  local xAxis = 1.5 --1.75   -- 0 is dead centre 
+
+	  -- Get car position and vectors:
+	  local carPos = ac.getCar(carID).position --  ac.getCarPosition()
+	  local carDir = ac.getCar(carID).look  --ac.getCarDirection()
+	  local carUp = ac.getCar(carID).up  --ac.getCarUp()
+	  local carRight = math.cross(carDir, carUp):normalize()
+
+
+
+	  -- Normalize car velocity:
+	  local carVelocityDir = math.normalize(ac.getCar(carID).velocity + carDir * 0.01)
+
+
+
+	  -- Get rotation coefficient, from -1 to 1, based on X-component of local velocity (that’s what dot is for)
+	  -- and taking absolute speed into account as well:
+	  local velocityX = math.clamp(math.dot(carRight, carVelocityDir) * math.pow(#ac.getCar(carID).velocity, 0.5) / 10, -1, 1)
+
+	  -- Camera angle for given coefficient:
+	  cameraIndex = 1  -- have to set it to 1 or 2
+	  local cameraAngle = -velocityX * math.rad(maximumCameraAngle[cameraIndex])
+
+
+	  -- Sine and cosine for camera angle
+	  local sin, cos = math.sin(cameraAngle), math.cos(cameraAngle)
+
+
+	  -- Set camera position:
+
+
+	return ( carPos 
+		+ (carRight * sin - carDir * cos) * distance
+		+ vec3(xAxisRadial, height, 0) 
+		+ (carRight * sin - carDir * cos) * xAxis
+		)
+
+end
+
+function directionIDFrontCornerLight(sp, cp, shakePower)
+	
+		
+	
+	-- Get car position and vectors:
+	  local carPos = ac.getCar(carID).position --  ac.getCarPosition()
+	  local carDir = ac.getCar(carID).look  --ac.getCarDirection()
+	  local carUp = ac.getCar(carID).up  --ac.getCarUp()
+	  local carRight = math.cross(carDir, carUp):normalize()
+	
+	
+	local pitchAngle = 177 --175 -80 -- -47.5  --0   -- pitch (angle up/down) in degrees  180 forward, 0 backward (at front of car)
+	
+	
+
+	cameraLookPosOffset = vec3(0,0,0)  -- controls direction offset??? don't use it, causes camera to sudden change angle
+
+
+	-- Normalize car velocity:
+	  local carVelocityDir = math.normalize(ac.getCar(carID).velocity + carDir * 0.01)
+
+	  -- Get rotation coefficient, from -1 to 1, based on X-component of local velocity (that’s what dot is for)
+	  -- and taking absolute speed into account as well:
+	  local velocityX = math.clamp(math.dot(carRight, carVelocityDir) * math.pow(#ac.getCar(carID).velocity, 0.5) / 10, -1, 1)
+
+	  -- Camera angle for given coefficient:
+	  cameraIndex = 1  -- have to set it to 1 or 2
+	  local cameraAngle = -velocityX * math.rad( 180)    -- use to change xaxis
+	-- Sine and cosine for camera angle
+		local sin, cos = math.sin(cameraAngle), math.cos(cameraAngle)
+	-- Set camera position:
+		local cameraPos = carPos - (carRight * sin + carDir * cos) * 1  -- (last value 1 is distance)
+    
+
+	  -- Find camera look
+	  local cameraLookPosOffset = carDir * cameraLookPosOffset + carUp * (1 - math.abs(0.5 ))  -- abs value also controls something (lookDirection.val)
+	  local cameraLook = (carPos + cameraLookPosOffset - cameraPos ):normalize()
+
+
+	  -- Use for `pitchAngle`:
+	  cameraLook:rotate(quat.fromAngleAxis(math.radians(pitchAngle), carRight))
+
+	  -- Set camera look:
+	
+	  
+	  return cameraLook
+end
+
+
+
+
+function positionRearRotate(sp, carDir, counter, time)
+	-- Will be called each frame:
+	-- Note: `dt` is time passed since last frame, `cameraIndex` is 1 or 2, depending on which camera is
+	-- chosen.				
+
+	  smoothing.setDT(globalDT)
+
+	  -- Get AC camera parameters with some corrections to be somewhat compatible:
+	 
+	  local distance = 3.85 --3 --0.75
+	  local height = 1.60 -- 1.5
+	  local xAxisRadial = 0  -- (if you use this the camera will shift around oscillate, applies in radial fashion)
+	  local xAxis = 0 --1.75   -- 0 is dead centre 
+
+	  -- Get car position and vectors:
+	  local carPos = ac.getCar(carID).position --  ac.getCarPosition()
+	  local carDir = ac.getCar(carID).look  --ac.getCarDirection()
+	  local carUp = ac.getCar(carID).up  --ac.getCarUp()
+	  local carRight = math.cross(carDir, carUp):normalize()
+
+
+
+	  -- Normalize car velocity:
+	  local carVelocityDir = math.normalize(ac.getCar(carID).velocity + carDir * 0.01)
+
+
+
+	  -- Get rotation coefficient, from -1 to 1, based on X-component of local velocity (that’s what dot is for)
+	  -- and taking absolute speed into account as well:
+	  local velocityX = math.clamp(math.dot(carRight, carVelocityDir) * math.pow(#ac.getCar(carID).velocity, 0.5) / 10, -1, 1)
+
+	  -- Camera angle for given coefficient:
+	  cameraIndex = 1  -- have to set it to 1 or 2
+	  local cameraAngle = -velocityX * math.rad(maximumCameraAngle[cameraIndex])
+
+
+	  -- Sine and cosine for camera angle
+	  local sin, cos = math.sin(cameraAngle), math.cos(cameraAngle)
+
+
+	  -- Set camera position:
+
+
+	return ( carPos 
+		+ (carRight * sin - carDir * cos) * distance
+		+ vec3(xAxisRadial, height, 0) 
+		+ (carRight * sin - carDir * cos) * xAxis
+		)
+
+end
+
+
+
+
+
+
+function positionRearSlide(sp, carDir, counter, time)
+	-- Will be called each frame:
+	-- Note: `dt` is time passed since last frame, `cameraIndex` is 1 or 2, depending on which camera is
+	-- chosen.				
+
+	  smoothing.setDT(globalDT)
+
+	  -- Get AC camera parameters with some corrections to be somewhat compatible:
+	 
+	  local distance = 1.75 --0.75
+	  local height = 1.15
+	  local xAxisRadial = 0  -- (if you use this the camera will shift around oscillate, applies in radial fashion)
+	  local xAxis = 1.5 --1.75   -- 0 is dead centre 
+
+	  -- Get car position and vectors:
+	  local carPos = ac.getCar(carID).position --  ac.getCarPosition()
+	  local carDir = ac.getCar(carID).look  --ac.getCarDirection()
+	  local carUp = ac.getCar(carID).up  --ac.getCarUp()
+	  local carRight = math.cross(carDir, carUp):normalize()
+
+
+
+	  -- Normalize car velocity:
+	  local carVelocityDir = math.normalize(ac.getCar(carID).velocity + carDir * 0.01)
+
+
+
+	  -- Get rotation coefficient, from -1 to 1, based on X-component of local velocity (that’s what dot is for)
+	  -- and taking absolute speed into account as well:
+	  local velocityX = math.clamp(math.dot(carRight, carVelocityDir) * math.pow(#ac.getCar(carID).velocity, 0.5) / 10, -1, 1)
+
+	  -- Camera angle for given coefficient:
+	  cameraIndex = 1  -- have to set it to 1 or 2
+	  local cameraAngle = -velocityX * math.rad(maximumCameraAngle[cameraIndex])
+
+
+	  -- Sine and cosine for camera angle
+	  local sin, cos = math.sin(cameraAngle), math.cos(cameraAngle)
+
+
+	  -- Set camera position:
+
+
+	return ( carPos 
+		+ (carRight * sin - carDir * cos) * distance
+		+ vec3(xAxisRadial, height, 0) 
+		+ (carRight * sin - carDir * cos) * xAxis
+		)
+
+end
+
+
+
+
+function directionRearSlide(sp, cp, shakePower)
+	
+		
+	
+	-- Get car position and vectors:
+	  local carPos = ac.getCar(carID).position --  ac.getCarPosition()
+	  local carDir = ac.getCar(carID).look  --ac.getCarDirection()
+	  local carUp = ac.getCar(carID).up  --ac.getCarUp()
+	  local carRight = math.cross(carDir, carUp):normalize()
+	
+	
+	local pitchAngle = 320 --175 -80 -- -47.5  --0   -- pitch (angle up/down) in degrees  180 forward, 0 backward (at front of car)
+	
+	
+
+	cameraLookPosOffset = vec3(0,0,0)  -- controls direction offset??? don't use it, causes camera to sudden change angle
+
+
+	-- Normalize car velocity:
+	  local carVelocityDir = math.normalize(ac.getCar(carID).velocity + carDir * 0.01)
+
+	  -- Get rotation coefficient, from -1 to 1, based on X-component of local velocity (that’s what dot is for)
+	  -- and taking absolute speed into account as well:
+	  local velocityX = math.clamp(math.dot(carRight, carVelocityDir) * math.pow(#ac.getCar(carID).velocity, 0.5) / 10, -1, 1)
+
+	  -- Camera angle for given coefficient:
+	  cameraIndex = 1  -- have to set it to 1 or 2
+	  local cameraAngle = -velocityX * math.rad( 0)    -- use to change xaxis
+	-- Sine and cosine for camera angle
+		local sin, cos = math.sin(cameraAngle), math.cos(cameraAngle)
+	-- Set camera position:
+		local cameraPos = carPos - (carRight * sin + carDir * cos) * 1  -- (last value 1 is distance)
+    
+
+	  -- Find camera look
+	  local cameraLookPosOffset = carDir * cameraLookPosOffset + carUp * (1 - math.abs(0.5 ))  -- abs value also controls something (lookDirection.val)
+	  local cameraLook = (carPos + cameraLookPosOffset - cameraPos ):normalize()
+
+
+	  -- Use for `pitchAngle`:
+	  cameraLook:rotate(quat.fromAngleAxis(math.radians(pitchAngle), carRight))
+
+	  -- Set camera look:
+	
+	  
+	  return cameraLook
+end
+
+
+
+
+-- InitialD Rear Corner Light view
+function positionIDRearCornerLight(sp, carDir, counter, time)
+	-- Will be called each frame:
+	-- Note: `dt` is time passed since last frame, `cameraIndex` is 1 or 2, depending on which camera is
+	-- chosen.				
+
+	  smoothing.setDT(globalDT)
+
+	  -- Get AC camera parameters with some corrections to be somewhat compatible:
+	 
+	  local distance = 1.65
+	  local height = 1
+	  local xAxisRadial = 0  -- (if you use this the camera will shift around oscillate, applies in radial fashion)
+	  local xAxis = 1.5 --1.75   -- 0 is dead centre 
+
+	  -- Get car position and vectors:
+	  local carPos = ac.getCar(carID).position --  ac.getCarPosition()
+	  local carDir = ac.getCar(carID).look  --ac.getCarDirection()
+	  local carUp = ac.getCar(carID).up  --ac.getCarUp()
+	  local carRight = math.cross(carDir, carUp):normalize()
+
+
+
+	  -- Normalize car velocity:
+	  local carVelocityDir = math.normalize(ac.getCar(carID).velocity + carDir * 0.01)
+
+
+
+	  -- Get rotation coefficient, from -1 to 1, based on X-component of local velocity (that’s what dot is for)
+	  -- and taking absolute speed into account as well:
+	  local velocityX = math.clamp(math.dot(carRight, carVelocityDir) * math.pow(#ac.getCar(carID).velocity, 0.5) / 10, -1, 1)
+
+	  -- Camera angle for given coefficient:
+	  cameraIndex = 1  -- have to set it to 1 or 2
+	  local cameraAngle = -velocityX * math.rad(maximumCameraAngle[cameraIndex])
+
+
+	  -- Sine and cosine for camera angle
+	  local sin, cos = math.sin(cameraAngle), math.cos(cameraAngle)
+
+
+	  -- Set camera position:
+
+
+	return ( carPos 
+		+ (carRight * sin - carDir * cos) * distance
+		+ vec3(xAxisRadial, height, 0) 
+		+ (carRight * sin - carDir * cos) * xAxis
+		)
+
+end
+
+function directionIDRearCornerLight(sp, cp, shakePower)
+	
+		
+	
+	-- Get car position and vectors:
+	  local carPos = ac.getCar(carID).position --  ac.getCarPosition()
+	  local carDir = ac.getCar(carID).look  --ac.getCarDirection()
+	  local carUp = ac.getCar(carID).up  --ac.getCarUp()
+	  local carRight = math.cross(carDir, carUp):normalize()
+	
+	
+	local pitchAngle = 315 --177 --175 -80 -- -47.5  --0   -- pitch (angle up/down) in degrees  180 forward, 0 backward (at front of car)
+	
+	
+
+	cameraLookPosOffset = vec3(0,0,0)  -- controls direction offset??? don't use it, causes camera to sudden change angle
+
+
+	-- Normalize car velocity:
+	  local carVelocityDir = math.normalize(ac.getCar(carID).velocity + carDir * 0.01)
+
+	  -- Get rotation coefficient, from -1 to 1, based on X-component of local velocity (that’s what dot is for)
+	  -- and taking absolute speed into account as well:
+	  local velocityX = math.clamp(math.dot(carRight, carVelocityDir) * math.pow(#ac.getCar(carID).velocity, 0.5) / 10, -1, 1)
+
+	  -- Camera angle for given coefficient:
+	  cameraIndex = 1  -- have to set it to 1 or 2
+	  local cameraAngle = velocityX * math.rad( 180)    -- use to change xaxis
+	-- Sine and cosine for camera angle
+		local sin, cos = math.sin(cameraAngle), math.cos(cameraAngle)
+	-- Set camera position:
+		local cameraPos = carPos - (carRight * sin + carDir * cos) * 1  -- (last value 1 is distance)
+    
+
+	  -- Find camera look
+	  local cameraLookPosOffset = carDir * cameraLookPosOffset + carUp * (1 - math.abs(0.5 ))  -- abs value also controls something (lookDirection.val)
+	  local cameraLook = (carPos + cameraLookPosOffset - cameraPos ):normalize()
+
+
+	  -- Use for `pitchAngle`:
+	  cameraLook:rotate(quat.fromAngleAxis(math.radians(pitchAngle), carRight))
+
+	  -- Set camera look:
+	
+	  
+	  return cameraLook
+end
+
+
+-- Movie Cabin view
+function positionMovieCabin(sp, carDir, counter, time)
+	-- Will be called each frame:
+	-- Note: `dt` is time passed since last frame, `cameraIndex` is 1 or 2, depending on which camera is
+	-- chosen.				
+
+	  smoothing.setDT(globalDT)
+
+	  -- Get AC camera parameters with some corrections to be somewhat compatible:
+	 
+	  local distance = -1.25  -- don't change this here for this view
+	  local height = ac.getCar(carID).driverEyesPosition.y --1
+	  local xAxisRadial = 0   -- 0 is dead centre
+	  local xAxis = 0 --3  --  -0.3   -- 0 centre, offsets camera x axis
+
+	  -- Get car position and vectors:
+	  local carPos = ac.getCar(carID).position --  ac.getCarPosition()
+	  local carDir = ac.getCar(carID).look  --ac.getCarDirection()
+	  local carUp = ac.getCar(carID).up  --ac.getCarUp()
+	  local carRight = math.cross(carDir, carUp):normalize()
+
+
+
+
+	  -- Normalize car velocity:
+	  local carVelocityDir = math.normalize(ac.getCar(carID).velocity + carDir * 0.01)
+
+
+	  -- Get rotation coefficient, from -1 to 1, based on X-component of local velocity (that’s what dot is for)
+	  -- and taking absolute speed into account as well:
+	  local velocityX = math.clamp(math.dot(carRight, carVelocityDir) * math.pow(#ac.getCar(carID).velocity, 0.5) / 10, -1, 1)
+
+	  -- Camera angle for given coefficient:
+	  cameraIndex = 1  -- have to set it to 1 or 2
+	  local cameraAngle = -velocityX * math.rad(maximumCameraAngle[cameraIndex])
+
+
+	  -- Sine and cosine for camera angle
+	  local sin, cos = math.sin(cameraAngle), math.cos(cameraAngle)
+
+
+	  -- Set camera position:
+	 
+	
+	return ( carPos 
+		+ (carRight * sin - carDir * cos) * ( distance    )
+		+ vec3(xAxisRadial, height, 0) 
+		+ (carRight * cos - carDir * sin) * xAxis  --orig cos cos
+		
+		)
+
+end
+
+function directionMovieCabin(sp, cp, shakePower, counter,time)
 	
 	
 	-- Get car position and vectors:
@@ -2520,11 +3351,8 @@ function directionIDDriveAway(sp, cp, shakePower, counter, time)
 	local carRight = math.cross(carDir, carUp):normalize()
 	
 	
-	local pitchAngle = 0 -- -47.5  --0   -- pitch (angle up/down) in degrees  180 forward, 0 backward (at front or back of car??)
-	
-	
-	--ac.debug('lookDirection', lookDirection)
-	--ac.debug('cameraLookPosOffset', cameraLookPosOffset)
+	local pitchAngle = 180 -- -47.5  --0   -- pitch (angle up/down) in degrees  180 forward, 0 backward (at front or back of car??)
+
 
 	cameraLookPosOffset = vec3(0,0,0)  -- controls direction offset??? don't use it, causes camera to sudden change angle
 
@@ -2539,7 +3367,7 @@ function directionIDDriveAway(sp, cp, shakePower, counter, time)
 
 	  -- Camera angle for given coefficient:
 	  cameraIndex = 1  -- have to set it to 1 or 2
-	  local cameraAngle = -velocityX * math.rad(54)    -- (maximumCameraAngle[cameraIndex])   use to change xaxis???
+	  local cameraAngle = velocityX * math.rad(54)    -- (maximumCameraAngle[cameraIndex])   use to change xaxis???
 	-- Sine and cosine for camera angle
 		local sin, cos = math.sin(cameraAngle), math.cos(cameraAngle)
 	-- Set camera position:
@@ -2552,7 +3380,124 @@ function directionIDDriveAway(sp, cp, shakePower, counter, time)
 	  local cameraLook = (carPos + cameraLookPosOffset - cameraPos ):normalize()
 
 
-	pitchAngle = pitchAngle + ac.getCar(carID).aabbSize.z * (1- 3*counter/time)
+	  -- Use for `pitchAngle`:
+	  cameraLook:rotate(quat.fromAngleAxis(math.radians(pitchAngle), carRight ))
+	
+
+	  -- Set camera look:	
+	  
+	  return cameraLook
+	
+end
+
+
+-- InitialD Front Lights Left Right Back
+function positionIDFrontLightsLRB(sp, carDir, counter, time)
+	-- Will be called each frame:
+	-- Note: `dt` is time passed since last frame, `cameraIndex` is 1 or 2, depending on which camera is
+	-- chosen.				
+
+	  smoothing.setDT(globalDT)
+
+	  -- Get AC camera parameters with some corrections to be somewhat compatible:
+	 
+	  local distance = -1 *ac.getCar(carID).aabbSize.z/1.75 -- -2.75  -- don't change this here for this view
+	  local height = ac.getCar(carID).driverEyesPosition.y/1.75 -- - 0.3
+	  local xAxisRadial = 0   -- 0 is dead centre
+	  local xAxis = ac.getCar(carID).aabbSize.x/2 --0.75 --3  --  -0.3   -- 0 centre, offsets camera x axis
+
+	  -- Get car position and vectors:
+	  local carPos = ac.getCar(carID).position --  ac.getCarPosition()
+	  local carDir = ac.getCar(carID).look  --ac.getCarDirection()
+	  local carUp = ac.getCar(carID).up  --ac.getCarUp()
+	  local carRight = math.cross(carDir, carUp):normalize()
+
+	  
+		xAxis = xAxis - counter/2.5
+		if xAxis < -0.75 then
+		--stop xAxis movement
+			xAxis = - 0.75			
+		end
+		
+		ac.debug('counter', counter)
+		if counter >= 4 or xAxis <= -0.75 then
+		
+			distance = distance - (counter-3.55)/4
+			xAxis = -0.75 + (counter-3.55)/7
+			
+			if xAxis >= 0 then
+			--	xAxis = 0
+			end
+		end
+		
+	--	ac.debug('xAxis', xAxis)
+
+	  -- Normalize car velocity:
+	  local carVelocityDir = math.normalize(ac.getCar(carID).velocity + carDir * 0.01)
+
+
+	  -- Get rotation coefficient, from -1 to 1, based on X-component of local velocity (that’s what dot is for)
+	  -- and taking absolute speed into account as well:
+	  local velocityX = math.clamp(math.dot(carRight, carVelocityDir) * math.pow(#ac.getCar(carID).velocity, 0.5) / 10, -1, 1)
+
+	  -- Camera angle for given coefficient:
+	  cameraIndex = 1  -- have to set it to 1 or 2
+	  local cameraAngle = -velocityX * math.rad(maximumCameraAngle[cameraIndex])
+
+
+	  -- Sine and cosine for camera angle
+	  local sin, cos = math.sin(cameraAngle), math.cos(cameraAngle)
+
+
+	  -- Set camera position:
+	 
+	
+	return ( carPos 
+		+ (carRight * sin - carDir * cos) * ( distance    )
+		+ vec3(xAxisRadial, height, 0) 
+		+ (carRight * cos - carDir * sin) * xAxis  --orig cos cos
+		
+		)
+
+end
+
+function directionIDFrontLightsLRB(sp, cp, shakePower, counter,time)
+	
+	
+	-- Get car position and vectors:
+	  local carPos = ac.getCar(carID).position --  ac.getCarPosition()
+	  local carDir = ac.getCar(carID).look  --ac.getCarDirection()
+	  local carUp = ac.getCar(carID).up  --ac.getCarUp()
+	local carRight = math.cross(carDir, carUp):normalize()
+	
+	
+	local pitchAngle = 180 -- -47.5  --0   -- pitch (angle up/down) in degrees  180 forward, 0 backward (at front or back of car??)
+
+
+	cameraLookPosOffset = vec3(0,0,0)  -- controls direction offset??? don't use it, causes camera to sudden change angle
+
+
+  -- Normalize car velocity:
+	  local carVelocityDir = math.normalize(ac.getCar(carID).velocity + carDir * 0.01)
+
+
+	  -- Get rotation coefficient, from -1 to 1, based on X-component of local velocity (that’s what dot is for)
+	  -- and taking absolute speed into account as well:
+	  local velocityX = math.clamp(math.dot(carRight, carVelocityDir) * math.pow(#ac.getCar(carID).velocity, 0.5) / 10, -1, 1)
+
+	  -- Camera angle for given coefficient:
+	  cameraIndex = 1  -- have to set it to 1 or 2
+	  local cameraAngle = velocityX * math.rad(54)    -- (maximumCameraAngle[cameraIndex])   use to change xaxis???
+	-- Sine and cosine for camera angle
+		local sin, cos = math.sin(cameraAngle), math.cos(cameraAngle)
+	-- Set camera position:
+		-- adjust cos sin combination to rotate camera 90degrees
+		local cameraPos = carPos + ( carRight * sin - carDir * cos) * 1  -- (last value 1 is distance)
+    --local cameraPos =  carPos +carRight 
+
+	  -- Find camera look
+	  local cameraLookPosOffset = carDir * cameraLookPosOffset + carUp * (1 - math.abs(1 ))  -- abs value also controls something (lookDirection.val)
+	  local cameraLook = (carPos + cameraLookPosOffset - cameraPos ):normalize()
 
 
 	  -- Use for `pitchAngle`:
@@ -2568,17 +3513,8 @@ end
 
 
 
-
-
-----------------------------------------------------
-----------------------------------------------------
---              TEST FUNC
-----------------------------------------------------
-----------------------------------------------------
-
-
-
-function positionTest(sp, carDir, counter, time)
+-- InitialD Rear Lights Left Right Back
+function positionIDRearLightsLRB(sp, carDir, counter, time)
 	-- Will be called each frame:
 	-- Note: `dt` is time passed since last frame, `cameraIndex` is 1 or 2, depending on which camera is
 	-- chosen.				
@@ -2587,116 +3523,67 @@ function positionTest(sp, carDir, counter, time)
 
 	  -- Get AC camera parameters with some corrections to be somewhat compatible:
 	 
-	  local distance = 12  -- don't change this here for this view
-	  local height = 0.25
+	  local distance = 1 *ac.getCar(carID).aabbSize.z/1.65 -- -2.75  -- don't change this here for this view
+	  local height = ac.getCar(carID).driverEyesPosition.y/1.5 -- - 0.3
 	  local xAxisRadial = 0   -- 0 is dead centre
-	  local xAxis = 0 --3  --  -0.3   -- 0 centre, offsets camera x axis
+	  local xAxis = ac.getCar(carID).aabbSize.x/2 -- + 0.75 --3  --  -0.3   -- 0 centre, offsets camera x axis
 
-	-- We only want to capture this once and keep it static
-	if firstPass == true then
-	
---	ac.debug('000 counter', counter)
 	  -- Get car position and vectors:
 	  local carPos = ac.getCar(carID).position --  ac.getCarPosition()
---	  local carDir = ac.getCar(carID).look  --ac.getCarDirection()
---	  local carUp = ac.getCar(carID).up  --ac.getCarUp()
-	  staticCarPos = carPos
---	  staticCarDir = carDir
---	  staticCarUp = carUp
-	  
---	  ac.debug('001 sCarPos', staticCarPos)
---	  ac.debug('001 sCarDir', staticCarDir)
---	  ac.debug('001 sCarUp', staticCarUp)
-	  
-	  firstPass=false
---	else	-- firstPass is false
---		carPos = staticCarPos
---		carDir = staticCarDir
---		carUp = staticCarUp
-end  -- if firstPass == true	  
-	  
-	-- local carPos = ac.getCar(carID).position --  ac.getCarPosition() 
-	--  local carDir = ac.getCar(carID).look  --ac.getCarDirection()
-	--  local carUp = ac.getCar(carID).up  --ac.getCarUp()
-	
-	
---	ac.debug('002 sCarPos', staticCarPos)
---	  ac.debug('002 sCarDir', staticCarDir)
---	  ac.debug('002 sCarUp', staticCarUp)
---	ac.debug('003 counter', counter)
-	
---	  local carRight = math.cross(carDir, carUp):normalize()
-	
-		
-		
-		
+	  local carDir = ac.getCar(carID).look  --ac.getCarDirection()
+	  local carUp = ac.getCar(carID).up  --ac.getCarUp()
+	  local carRight = math.cross(carDir, carUp):normalize()
 
-
+	  
+		xAxis = xAxis - counter/2.5
+		if xAxis < -0.75 then
+		--stop xAxis movement
+			xAxis = - 0.75			
+		end
+		
+		ac.debug('counter', counter)
+		if counter >= 4 or xAxis <= -0.75 then
+		
+			distance = distance + (counter-3.55)/4
+			xAxis = -0.75 + (counter-3.55)/7
+			
+			if xAxis >= 0 then
+			--	xAxis = 0
+			end
+		end
+		
+		--ac.debug('xAxis', xAxis)
 
 	  -- Normalize car velocity:
---	  local carVelocityDir = math.normalize(ac.getCar(carID).velocity + carDir * 0.01)
-
-
+	  local carVelocityDir = math.normalize(ac.getCar(carID).velocity + carDir * 0.01)
 
 
 	  -- Get rotation coefficient, from -1 to 1, based on X-component of local velocity (that’s what dot is for)
 	  -- and taking absolute speed into account as well:
---	  local velocityX = math.clamp(math.dot(carRight, carVelocityDir) * math.pow(#ac.getCar(carID).velocity, 0.5) / 10, -1, 1)
+	  local velocityX = math.clamp(math.dot(carRight, carVelocityDir) * math.pow(#ac.getCar(carID).velocity, 0.5) / 10, -1, 1)
 
 	  -- Camera angle for given coefficient:
---	  cameraIndex = 1  -- have to set it to 1 or 2
---	  local cameraAngle = -velocityX * math.rad(maximumCameraAngle[cameraIndex])
+	  cameraIndex = 1  -- have to set it to 1 or 2
+	  local cameraAngle = -velocityX * math.rad(maximumCameraAngle[cameraIndex])
 
 
 	  -- Sine and cosine for camera angle
---	  local sin, cos = math.sin(cameraAngle), math.cos(cameraAngle)
-
-	  -- Up direction for camera (could be used for horizon lock):
-	--  local cameraUp = (carUp + vec3(0, 3, 0)):normalize()   -- not needed
-
-	--ac.debug('carPos 2nd', carPos)
-	--ac.debug('carRight', carRight)
+	  local sin, cos = math.sin(cameraAngle), math.cos(cameraAngle)
 
 
 	  -- Set camera position:
 	 
-
-
-		--distance = distance  - ac.getCar(carID).aabbSize.z * 1 * (1- 5*counter/time)
-		--distance = distance  - ac.getCar(carID).aabbSize.z * <SPEED_SCALE> * (1- <distance from car>*counter/time)
-	-- make it go forwards via x -1
-	--local distanceOffset = 1 * ac.getCar(carID).aabbSize.z * 1 * (1- 2*counter/time)
-	local distanceOffset = math.abs(ac.getCar(carID).aabbSize.z/6 * (1- 2.5*counter/time))
 	
-	
-	-- hold the camera still when movement animation is over
-
---		prevCarDistance = distance	
---		distance = distance  + distanceOffset	
-
---	xAxis = xAxis - distanceOffset/4
---	distance = distance - distanceOffset * 10
-	height = height + distanceOffset *1.5
-	
---	ac.debug('004 height', height)
---	ac.debug('distance', distance)
---	ac.debug('counterovertime', ac.getCar(carID).aabbSize.z * 2*counter/time)
-
-
-
-	
-	return ( staticCarPos + vec3(0,height,3))
-	
---	carPos  
---		+ (carRight * sin - carDir * cos) * ( distance    )
---		+ vec3(xAxisRadial, height, 0)  
---		+ (carRight * cos - carDir * sin) * xAxis  --orig cos cos
+	return ( carPos 
+		+ (carRight * sin - carDir * cos) * ( distance    )
+		+ vec3(xAxisRadial, height, 0) 
+		+ (carRight * cos - carDir * sin) * xAxis  --orig cos cos
 		
---		)
+		)
 
 end
 
-function directionTest(sp, cp, shakePower, counter, time)
+function directionIDRearLightsLRB(sp, cp, shakePower, counter,time)
 	
 	
 	-- Get car position and vectors:
@@ -2706,11 +3593,8 @@ function directionTest(sp, cp, shakePower, counter, time)
 	local carRight = math.cross(carDir, carUp):normalize()
 	
 	
-	local pitchAngle = 0 -- -47.5  --0   -- pitch (angle up/down) in degrees  180 forward, 0 backward (at front or back of car??)
-	
-	
-	--ac.debug('lookDirection', lookDirection)
-	--ac.debug('cameraLookPosOffset', cameraLookPosOffset)
+	local pitchAngle = 0 --180 -- -47.5  --0   -- pitch (angle up/down) in degrees  180 forward, 0 backward (at front or back of car??)
+
 
 	cameraLookPosOffset = vec3(0,0,0)  -- controls direction offset??? don't use it, causes camera to sudden change angle
 
@@ -2719,15 +3603,13 @@ function directionTest(sp, cp, shakePower, counter, time)
 	  local carVelocityDir = math.normalize(ac.getCar(carID).velocity + carDir * 0.01)
 
 
---ac.debug('carVelocityDir', carVelocityDir)
-
 	  -- Get rotation coefficient, from -1 to 1, based on X-component of local velocity (that’s what dot is for)
 	  -- and taking absolute speed into account as well:
 	  local velocityX = math.clamp(math.dot(carRight, carVelocityDir) * math.pow(#ac.getCar(carID).velocity, 0.5) / 10, -1, 1)
 
 	  -- Camera angle for given coefficient:
 	  cameraIndex = 1  -- have to set it to 1 or 2
-	  local cameraAngle = -velocityX * math.rad(54)    -- (maximumCameraAngle[cameraIndex])   use to change xaxis???
+	  local cameraAngle = velocityX * math.rad(54)    -- (maximumCameraAngle[cameraIndex])   use to change xaxis???
 	-- Sine and cosine for camera angle
 		local sin, cos = math.sin(cameraAngle), math.cos(cameraAngle)
 	-- Set camera position:
@@ -2739,15 +3621,387 @@ function directionTest(sp, cp, shakePower, counter, time)
 	  local cameraLookPosOffset = carDir * cameraLookPosOffset + carUp * (1 - math.abs(1 ))  -- abs value also controls something (lookDirection.val)
 	  local cameraLook = (carPos + cameraLookPosOffset - cameraPos ):normalize()
 
---ac.debug ('ac.getCameraPosition', ac.getCameraPosition() )
 
---	ac.debug('000 pitchAngle', pitchAngle)
-	ac.debug('000 counter', counter)
-	ac.debug('000 time', time)
-	ac.debug('000 formula stuff', ac.getCar(carID).aabbSize.z/2 * (1- 2.5*counter/time) )
-	pitchAngle = pitchAngle + ac.getCar(carID).aabbSize.z * (1- 3*counter/time)
+	  -- Use for `pitchAngle`:
+	  cameraLook:rotate(quat.fromAngleAxis(math.radians(pitchAngle), carRight ))
+	
 
-ac.debug('001 pitchAngle', pitchAngle)
+	  -- Set camera look:	
+	  
+	  return cameraLook
+	
+end
+
+
+-- InitialD Rear Leader Pick up pace
+function positionIDRearLeaderPickUpPace(sp, carDir, counter, time)
+	-- Will be called each frame:
+	-- Note: `dt` is time passed since last frame, `cameraIndex` is 1 or 2, depending on which camera is
+	-- chosen.				
+
+	  smoothing.setDT(globalDT)
+
+	  -- Get AC camera parameters with some corrections to be somewhat compatible:
+	 
+	  local distance = 1 *ac.getCar(carID).aabbSize.z  --/1.65 -- -2.75  -- don't change this here for this view
+	  local height = ac.getCar(carID).driverEyesPosition.y  --/1.5 -- - 0.3
+	  local xAxisRadial = 0   -- 0 is dead centre
+	  local xAxis = 0 --ac.getCar(carID).aabbSize.x/2 -- + 0.75 --3  --  -0.3   -- 0 centre, offsets camera x axis
+
+	  -- Get car position and vectors:
+	  local carPos = ac.getCar(carID).position --  ac.getCarPosition()
+	  local carDir = ac.getCar(carID).look  --ac.getCarDirection()
+	  local carUp = ac.getCar(carID).up  --ac.getCarUp()
+	  local carRight = math.cross(carDir, carUp):normalize()
+
+	  
+	
+		distance = distance + (counter)  -- /4
+			
+	
+
+
+	  -- Normalize car velocity:
+	  local carVelocityDir = math.normalize(ac.getCar(carID).velocity + carDir * 0.01)
+
+
+	  -- Get rotation coefficient, from -1 to 1, based on X-component of local velocity (that’s what dot is for)
+	  -- and taking absolute speed into account as well:
+	  local velocityX = math.clamp(math.dot(carRight, carVelocityDir) * math.pow(#ac.getCar(carID).velocity, 0.5) / 10, -1, 1)
+
+	  -- Camera angle for given coefficient:
+	  cameraIndex = 1  -- have to set it to 1 or 2
+	  local cameraAngle = -velocityX * math.rad(maximumCameraAngle[cameraIndex])
+
+
+	  -- Sine and cosine for camera angle
+	  local sin, cos = math.sin(cameraAngle), math.cos(cameraAngle)
+
+
+	  -- Set camera position:
+	 
+	
+	return ( carPos 
+		+ (carRight * sin - carDir * cos) * ( distance    )
+		+ vec3(xAxisRadial, height, 0) 
+		+ (carRight * cos - carDir * sin) * xAxis  --orig cos cos
+		
+		)
+
+end
+
+
+-- InitialD Rear Chaser Catch Up
+function positionIDRearChaserCatchUp(sp, carDir, counter, time)
+	-- Will be called each frame:
+	-- Note: `dt` is time passed since last frame, `cameraIndex` is 1 or 2, depending on which camera is
+	-- chosen.				
+
+	  smoothing.setDT(globalDT)
+
+	  -- Get AC camera parameters with some corrections to be somewhat compatible:
+	 
+	  local distance = 1 *ac.getCar(carID).aabbSize.z * 3  --/1.65 -- -2.75  -- don't change this here for this view
+	  local height = ac.getCar(carID).driverEyesPosition.y  --/1.5 -- - 0.3
+	  local xAxisRadial = 0   -- 0 is dead centre
+	  local xAxis = 0 --ac.getCar(carID).aabbSize.x/2 -- + 0.75 --3  --  -0.3   -- 0 centre, offsets camera x axis
+
+	  -- Get car position and vectors:
+	  local carPos = ac.getCar(carID).position --  ac.getCarPosition()
+	  local carDir = ac.getCar(carID).look  --ac.getCarDirection()
+	  local carUp = ac.getCar(carID).up  --ac.getCarUp()
+	  local carRight = math.cross(carDir, carUp):normalize()
+
+	  
+	
+		distance = distance - (counter)  -- /4
+			
+	
+
+
+	  -- Normalize car velocity:
+	  local carVelocityDir = math.normalize(ac.getCar(carID).velocity + carDir * 0.01)
+
+
+	  -- Get rotation coefficient, from -1 to 1, based on X-component of local velocity (that’s what dot is for)
+	  -- and taking absolute speed into account as well:
+	  local velocityX = math.clamp(math.dot(carRight, carVelocityDir) * math.pow(#ac.getCar(carID).velocity, 0.5) / 10, -1, 1)
+
+	  -- Camera angle for given coefficient:
+	  cameraIndex = 1  -- have to set it to 1 or 2
+	  local cameraAngle = -velocityX * math.rad(maximumCameraAngle[cameraIndex])
+
+
+	  -- Sine and cosine for camera angle
+	  local sin, cos = math.sin(cameraAngle), math.cos(cameraAngle)
+
+
+	  -- Set camera position:
+	 
+	
+	return ( carPos 
+		+ (carRight * sin - carDir * cos) * ( distance    )
+		+ vec3(xAxisRadial, height, 0) 
+		+ (carRight * cos - carDir * sin) * xAxis  --orig cos cos
+		
+		)
+
+end
+
+
+-- ///////////////////////////////////////////////////////////
+
+-- InitialD Front Leader Pick up pace 
+function positionIDFrontLeaderPickUpPace(sp, carDir, counter, time)
+	-- Will be called each frame:
+	-- Note: `dt` is time passed since last frame, `cameraIndex` is 1 or 2, depending on which camera is
+	-- chosen.				
+
+	  smoothing.setDT(globalDT)
+
+	  -- Get AC camera parameters with some corrections to be somewhat compatible:
+	 
+	  local distance = -1 *ac.getCar(carID).aabbSize.z  --/1.65 -- -2.75  -- don't change this here for this view
+	  local height = ac.getCar(carID).driverEyesPosition.y  --/1.5 -- - 0.3
+	  local xAxisRadial = 0   -- 0 is dead centre
+	  local xAxis = 0 --ac.getCar(carID).aabbSize.x/2 -- + 0.75 --3  --  -0.3   -- 0 centre, offsets camera x axis
+
+	  -- Get car position and vectors:
+	  local carPos = ac.getCar(carID).position --  ac.getCarPosition()
+	  local carDir = ac.getCar(carID).look  --ac.getCarDirection()
+	  local carUp = ac.getCar(carID).up  --ac.getCarUp()
+	  local carRight = math.cross(carDir, carUp):normalize()
+
+	  
+	
+		distance = distance - (counter)  -- /4
+			
+	
+
+
+	  -- Normalize car velocity:
+	  local carVelocityDir = math.normalize(ac.getCar(carID).velocity + carDir * 0.01)
+
+
+	  -- Get rotation coefficient, from -1 to 1, based on X-component of local velocity (that’s what dot is for)
+	  -- and taking absolute speed into account as well:
+	  local velocityX = math.clamp(math.dot(carRight, carVelocityDir) * math.pow(#ac.getCar(carID).velocity, 0.5) / 10, -1, 1)
+
+	  -- Camera angle for given coefficient:
+	  cameraIndex = 1  -- have to set it to 1 or 2
+	  local cameraAngle = -velocityX * math.rad(maximumCameraAngle[cameraIndex])
+
+
+	  -- Sine and cosine for camera angle
+	  local sin, cos = math.sin(cameraAngle), math.cos(cameraAngle)
+
+
+	  -- Set camera position:
+	 
+	
+	return ( carPos 
+		+ (carRight * sin - carDir * cos) * ( distance    )
+		+ vec3(xAxisRadial, height, 0) 
+		+ (carRight * cos - carDir * sin) * xAxis  --orig cos cos
+		
+		)
+
+end
+
+
+-- InitialD Front Chaser Catch Up
+function positionIDFrontChaserCatchUp(sp, carDir, counter, time)
+	-- Will be called each frame:
+	-- Note: `dt` is time passed since last frame, `cameraIndex` is 1 or 2, depending on which camera is
+	-- chosen.				
+
+	  smoothing.setDT(globalDT)
+
+	  -- Get AC camera parameters with some corrections to be somewhat compatible:
+	 
+	  local distance = -1 *ac.getCar(carID).aabbSize.z * 3  --/1.65 -- -2.75  -- don't change this here for this view
+	  local height = ac.getCar(carID).driverEyesPosition.y  --/1.5 -- - 0.3
+	  local xAxisRadial = 0   -- 0 is dead centre
+	  local xAxis = 0 --ac.getCar(carID).aabbSize.x/2 -- + 0.75 --3  --  -0.3   -- 0 centre, offsets camera x axis
+
+	  -- Get car position and vectors:
+	  local carPos = ac.getCar(carID).position --  ac.getCarPosition()
+	  local carDir = ac.getCar(carID).look  --ac.getCarDirection()
+	  local carUp = ac.getCar(carID).up  --ac.getCarUp()
+	  local carRight = math.cross(carDir, carUp):normalize()
+
+	  
+	
+		distance = distance + (counter)  -- /4
+			
+	
+
+
+	  -- Normalize car velocity:
+	  local carVelocityDir = math.normalize(ac.getCar(carID).velocity + carDir * 0.01)
+
+
+	  -- Get rotation coefficient, from -1 to 1, based on X-component of local velocity (that’s what dot is for)
+	  -- and taking absolute speed into account as well:
+	  local velocityX = math.clamp(math.dot(carRight, carVelocityDir) * math.pow(#ac.getCar(carID).velocity, 0.5) / 10, -1, 1)
+
+	  -- Camera angle for given coefficient:
+	  cameraIndex = 1  -- have to set it to 1 or 2
+	  local cameraAngle = -velocityX * math.rad(maximumCameraAngle[cameraIndex])
+
+
+	  -- Sine and cosine for camera angle
+	  local sin, cos = math.sin(cameraAngle), math.cos(cameraAngle)
+
+
+	  -- Set camera position:
+	 
+	
+	return ( carPos 
+		+ (carRight * sin - carDir * cos) * ( distance    )
+		+ vec3(xAxisRadial, height, 0) 
+		+ (carRight * cos - carDir * sin) * xAxis  --orig cos cos
+		
+		)
+
+end
+
+----------------------------------------------------
+----------------------------------------------------
+--              TEST FUNC
+----------------------------------------------------
+----------------------------------------------------
+
+function positionTest2(sp, carDir, counter, time)
+	local lx,ly,lz
+    local distanceOffset = -1 * ac.getCar(carID).aabbSize.z * 25 *counter/time
+  
+	
+  ly = sp.y + 75 + distanceOffset
+  
+  if ly < sp.y+5 then
+     -- keep ly the same
+	 ly=sp.y + 5
+  end
+  ac.debug('ly', ly)
+  
+  lx = sp.x + 5 --5 
+  
+  lz = sp.z + 15  --- 3.5
+  
+  return vec3(lx, ly, lz)
+	
+
+end
+
+
+function positionTest(sp, carDir, counter, time)
+	-- Will be called each frame:
+	-- Note: `dt` is time passed since last frame, `cameraIndex` is 1 or 2, depending on which camera is
+	-- chosen.				
+
+	  smoothing.setDT(globalDT)
+
+	  -- Get AC camera parameters with some corrections to be somewhat compatible:
+	 
+	  local distance = -1 *ac.getCar(carID).aabbSize.z/1.75 -- -2.75  -- don't change this here for this view
+	  local height = ac.getCar(carID).driverEyesPosition.y/1.75 -- - 0.3
+	  local xAxisRadial = 0   -- 0 is dead centre
+	  local xAxis = 0.75 --3  --  -0.3   -- 0 centre, offsets camera x axis
+
+	  -- Get car position and vectors:
+	  local carPos = ac.getCar(carID).position --  ac.getCarPosition()
+	  local carDir = ac.getCar(carID).look  --ac.getCarDirection()
+	  local carUp = ac.getCar(carID).up  --ac.getCarUp()
+	  local carRight = math.cross(carDir, carUp):normalize()
+
+	  
+		xAxis = xAxis - counter/2.5
+		if xAxis < -0.75 then
+		--stop xAxis movement
+			xAxis = - 0.75			
+		end
+		
+		ac.debug('counter', counter)
+		if counter >= 4 or xAxis <= -0.75 then
+		
+			distance = distance - (counter-3.55)/4
+			xAxis = -0.75 + (counter-3.55)/7
+			
+			if xAxis >= 0 then
+			--	xAxis = 0
+			end
+		end
+		
+		ac.debug('xAxis', xAxis)
+
+	  -- Normalize car velocity:
+	  local carVelocityDir = math.normalize(ac.getCar(carID).velocity + carDir * 0.01)
+
+
+	  -- Get rotation coefficient, from -1 to 1, based on X-component of local velocity (that’s what dot is for)
+	  -- and taking absolute speed into account as well:
+	  local velocityX = math.clamp(math.dot(carRight, carVelocityDir) * math.pow(#ac.getCar(carID).velocity, 0.5) / 10, -1, 1)
+
+	  -- Camera angle for given coefficient:
+	  cameraIndex = 1  -- have to set it to 1 or 2
+	  local cameraAngle = -velocityX * math.rad(maximumCameraAngle[cameraIndex])
+
+
+	  -- Sine and cosine for camera angle
+	  local sin, cos = math.sin(cameraAngle), math.cos(cameraAngle)
+
+
+	  -- Set camera position:
+	 
+	
+	return ( carPos 
+		+ (carRight * sin - carDir * cos) * ( distance    )
+		+ vec3(xAxisRadial, height, 0) 
+		+ (carRight * cos - carDir * sin) * xAxis  --orig cos cos
+		
+		)
+
+end
+
+function directionTest(sp, cp, shakePower, counter,time)
+	
+	
+	-- Get car position and vectors:
+	  local carPos = ac.getCar(carID).position --  ac.getCarPosition()
+	  local carDir = ac.getCar(carID).look  --ac.getCarDirection()
+	  local carUp = ac.getCar(carID).up  --ac.getCarUp()
+	local carRight = math.cross(carDir, carUp):normalize()
+	
+	
+	local pitchAngle = 180 -- -47.5  --0   -- pitch (angle up/down) in degrees  180 forward, 0 backward (at front or back of car??)
+
+
+	cameraLookPosOffset = vec3(0,0,0)  -- controls direction offset??? don't use it, causes camera to sudden change angle
+
+
+  -- Normalize car velocity:
+	  local carVelocityDir = math.normalize(ac.getCar(carID).velocity + carDir * 0.01)
+
+
+	  -- Get rotation coefficient, from -1 to 1, based on X-component of local velocity (that’s what dot is for)
+	  -- and taking absolute speed into account as well:
+	  local velocityX = math.clamp(math.dot(carRight, carVelocityDir) * math.pow(#ac.getCar(carID).velocity, 0.5) / 10, -1, 1)
+
+	  -- Camera angle for given coefficient:
+	  cameraIndex = 1  -- have to set it to 1 or 2
+	  local cameraAngle = velocityX * math.rad(54)    -- (maximumCameraAngle[cameraIndex])   use to change xaxis???
+	-- Sine and cosine for camera angle
+		local sin, cos = math.sin(cameraAngle), math.cos(cameraAngle)
+	-- Set camera position:
+		-- adjust cos sin combination to rotate camera 90degrees
+		local cameraPos = carPos + ( carRight * sin - carDir * cos) * 1  -- (last value 1 is distance)
+    --local cameraPos =  carPos +carRight 
+
+	  -- Find camera look
+	  local cameraLookPosOffset = carDir * cameraLookPosOffset + carUp * (1 - math.abs(1 ))  -- abs value also controls something (lookDirection.val)
+	  local cameraLook = (carPos + cameraLookPosOffset - cameraPos ):normalize()
+
 
 	  -- Use for `pitchAngle`:
 	  cameraLook:rotate(quat.fromAngleAxis(math.radians(pitchAngle), carRight ))
@@ -2955,7 +4209,10 @@ function rollDroneFreeCamera(carDir)
   return vec3(-carDir.x,1,-carDir.z)
 end
 
+--///////////////////////////////////////////////////////
 -- control position and direction 
+--//////////////////////////////////////////////////////
+
 
 function calcPosition(title, sp, carDir, counter, time)
   local position
@@ -2995,6 +4252,24 @@ function calcPosition(title, sp, carDir, counter, time)
   if title == "InitialD Rear Drop Pan Zoom" then position = positionIDRearDropPanZoom(sp, carDir, counter, time) end	
   if title == "InitialD Front Drop Pan Zoom" then position = positionIDFrontDropPanZoom(sp, carDir, counter, time) end
   if title == "InitialD Drive Away" then position = positionIDDriveAway(sp, carDir, counter, time) end
+  if title == "InitialD Front Back Left Side" then position = positionIDFrontBackLeft(sp, carDir, counter, time) end
+  if title == "InitialD Back Front Right Side" then position = positionIDBackFrontRight(sp, carDir, counter, time) end
+  if title == "Micro Machines" then position = positionMicroMachines(sp, carDir, counter, time) end
+  if title == "Blimp" then position = positionBlimp(sp, carDir, counter, time) end
+  if title == "Blimp Zoom In" then position = positionBlimpZoomIn(sp, carDir, counter, time) end
+  if title == "InitialD Rear Wheel Look Forward" then position = positionIDRearWheelForward(sp, carDir, counter, time) end
+  if title == "InitialD Front Corner Hood" then position = positionIDFrontCornerHood(sp, carDir, counter, time) end
+  if title == "InitialD Front Corner Light" then position = positionIDFrontCornerLight(sp, carDir, counter, time) end
+  if title == "InitialD Rear Corner Light" then position = positionIDRearCornerLight(sp, carDir, counter, time) end
+  if title == "Rear Slide" then position = positionRearSlide(sp, carDir, counter, time) end
+  if title == "Rear Rotate" then position = positionRearRotate(sp, carDir, counter, time) end
+  if title == "Movie Cabin" then position = positionMovieCabin(sp, carDir, counter, time) end
+  if title == "InitialD Front Lights Left Right Back" then position = positionIDFrontLightsLRB(sp, carDir, counter, time) end
+  if title == "InitialD Rear Lights Left Right Back" then position = positionIDRearLightsLRB(sp, carDir, counter, time) end
+  if title == "InitialD Rear Leader Pick Up Pace" then position = positionIDRearLeaderPickUpPace(sp, carDir, counter, time) end
+  if title == "InitialD Rear Chaser Catch Up" then position = positionIDRearChaserCatchUp(sp, carDir, counter, time) end
+  if title == "InitialD Front Leader Pick Up Pace" then position = positionIDFrontLeaderPickUpPace(sp, carDir, counter, time) end
+  if title == "InitialD Front Chaser Catch Up" then position = positionIDFrontChaserCatchUp(sp, carDir, counter, time) end
   
   if title == "test" then position = positionTest(sp, carDir, counter, time) end
   return position
@@ -3037,9 +4312,27 @@ function calcDirection(title, sp, cp, shakePower, counter, time)
   if title == "InitialD Rear Pan Left" then direction = directionIDRearPanLeft(sp, cp, shakePower) end  
   if title == "InitialD Rear Drop Pan Zoom" then direction = directionIDRearDropPanZoom(sp, cp, shakePower, counter, time) end
   if title == "InitialD Front Drop Pan Zoom" then direction = directionIDFrontDropPanZoom(sp, cp, shakePower, counter, time) end
-  if title == "InitialD Drive Away" then direction = directionToCar(sp, cp, shakePower, counter, time) end
+  if title == "InitialD Drive Away" then direction = directionToCar(sp, cp, shakePower) end
+  if title == "InitialD Front Back Left Side" then direction = directionToCar(sp, cp, shakePower) end
+  if title == "InitialD Back Front Right Side" then direction = directionToCar(sp, cp, shakePower) end
+  if title == "Micro Machines" then direction = directionToCar(sp, cp, shakePower) end
+  if title == "Blimp" then direction = directionToCar(sp, cp, shakePower) end
+  if title == "Blimp Zoom In" then direction = directionToCar(sp, cp, shakePower) end 
+  if title == "InitialD Rear Wheel Look Forward" then direction = directionIDRearWheelForward(sp, cp, shakePower) end 
+  if title == "InitialD Front Corner Hood" then direction = directionIDFrontCornerHood(sp, cp, shakePower) end
+  if title == "InitialD Front Corner Light" then direction = directionIDFrontCornerLight(sp, cp, shakePower) end
+  if title == "InitialD Rear Corner Light" then direction = directionIDRearCornerLight(sp, cp, shakePower) end
+  if title == "Rear Slide" then direction = directionRearSlide(sp, cp, shakePower) end 
+  if title == "Rear Rotate" then direction = directionToCar(sp, cp, shakePower) end
+  if title == "Movie Cabin" then direction = directionMovieCabin(sp, cp, shakePower, counter, time) end
+  if title == "InitialD Front Lights Left Right Back" then direction = directionIDFrontLightsLRB(sp, cp, shakePower, counter, time) end
+  if title == "InitialD Rear Lights Left Right Back" then direction = directionIDRearLightsLRB(sp, cp, shakePower, counter, time) end
+  if title == "InitialD Rear Leader Pick Up Pace" then direction = directionToCar(sp, cp, shakePower) end
+  if title == "InitialD Rear Chaser Catch Up" then direction = directionToCar(sp, cp, shakePower) end
+  if title == "InitialD Front Leader Pick Up Pace" then direction = directionToCar(sp, cp, shakePower) end
+  if title == "InitialD Front Chaser Catch Up" then direction = directionToCar(sp, cp, shakePower) end
   
-  if title == "test" then direction = directionTest(sp, cp, shakePower, counter, time) end
+  if title == "test" then direction = directionToCar(sp, cp, shakePower) end  -- (sp, cp, shakePower, counter, time) end
   return direction
 end
 
@@ -3140,7 +4433,7 @@ function update(dt)
 
 
 			
-			
+		
 -- if Random Camera Angle is selected 
 		if rndCamAngles == true then
 			
@@ -3161,12 +4454,18 @@ function update(dt)
 			--ac.debug('time', time)
 			--ac.debug('counter', counter)
 			
+			
 			if (time > 0 and counter > time) then  -- and the timer for currrent cam is complete
 			
 				
-				--angleType = math.random(1,#titles)
+				
+				ac.debug('999 rndList size', #rndList)	
 				angleType = returnRandomAngleNumber( rndList)
 				
+				-- for testing rndList array to see elements
+				testString = testString .. angleType .. ","
+				ac.debug('testString', testString)
+				ac.debug('shrink rndList', table.concat(rndList,", "))
 						
 				preangleType = angleType 
 				counter = 0
@@ -3329,6 +4628,7 @@ function update(dt)
       end
       ctlStatus = true
       counter = 0
+	  --copyAnglesList()
     end
 	
 		
@@ -3595,6 +4895,8 @@ function numPadSetting()
   end    
 end
 
+
+
 --/////////////////////
 --   Random generation
 --////////////////////////
@@ -3603,7 +4905,7 @@ end
 
 
 function copyAnglesList()
-
+--rndList = {}
 	for i=1, #titles do
 		--ac.debug('i value', i)
 		--rndList[i] = titles[i]
@@ -3612,10 +4914,24 @@ function copyAnglesList()
 		--ac.debug('rndList size', #rndList)
 
 	end
---	ac.debug('rndList size', #rndList)
+	ac.debug('000 rndList size', #rndList)
+--ac.debug('rndList', table.concat(rndList,", "))
 end
 
+function removeOne(aList, aNum)
 
+	if #aList > 1  then
+		aList[aNum] = aList[#aList]
+		aList[#aList] = nil
+	
+	elseif #aList == 1 then
+	 aList[aNum] = nil 
+	else  -- equals zero (Should not get here)
+		ac.debug('ERROR: removeOne unexpected; empty array', true)
+	end
+
+
+end
 
 
 function returnRandomAngleNumber( aList)
@@ -3623,21 +4939,29 @@ function returnRandomAngleNumber( aList)
 	local rndAngleNumber
 	local rndNumber
 
-	ac.debug('999 aList size', #aList)
+	
 -- if list is not empty
 	if #aList ~= 0 then
 		
 		rndNumber = math.random(1, #aList)   -- produce a random number between 1 and the max size of aList
 		rndAngleNumber = aList [rndNumber]   -- get the angleNumber from aList using rndNumber as the index
-		table.remove(aList, rndNumber)  -- remove the rndNumber index already used, from aList (shrink it)
--- list is empty; otherwise rebuild the list
+		--table.remove(aList, rndNumber)  -- remove the rndNumber index already used, from aList (shrink it)
+		removeOne(aList,rndNumber)
+-- list is empty then rebuild the list
 	else
 		copyAnglesList()
 		rndNumber = math.random(1, #aList)   -- produce a random number between 1 and the max size of aList
 		rndAngleNumber = aList [rndNumber]   -- get the angleNumber from aList using rndNumber as the index
-		table.remove(aList, rndNumber)  -- remove the rndNumber index already used, from aList (shrink it)
+		--table.remove(aList, rndNumber)  -- remove the rndNumber index already used, from aList (shrink it)
+		removeOne(aList,rndNumber)
 	end
 
+--ac.debug('999 aList size', #aList)
 	return rndAngleNumber
 end
+
+
+
+--////////////////////////
+
 
