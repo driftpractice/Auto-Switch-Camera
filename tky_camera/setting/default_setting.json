@@ -37,7 +37,24 @@
   ["InitialD Rear Drop Pan Zoom"] = { shake = 0, exp = 1, loop = 0, cameramove = 1, dof = 0.69999998807907, fov = 60, time = 8 },
   ["InitialD Front Drop Pan Zoom"] = { shake = 0, exp = 1, loop = 0, cameramove = 1, dof = 0.69999998807907, fov = 60, time = 8 },
   ["InitialD Drive Away"] = { shake = 0, exp = 1, loop = 0, cameramove = 0, dof = 0.69999998807907, fov = 60, time = 3.5 },
+  ["InitialD Front Back Left Side"] = { shake = 0, exp = 1, loop = 0, cameramove = 1, dof = 0.69999998807907, fov = 60, time = 8 },
+  ["InitialD Back Front Right Side"] = { shake = 0, exp = 1, loop = 0, cameramove = 1, dof = 0.69999998807907, fov = 60, time = 8 },  
+  ["Micro Machines"] = { shake = 0, exp = 1, loop = 0, cameramove = 1, dof = 0.69999998807907, fov = 60, time = 8 },
+  ["Blimp"] = { shake = 0, exp = 1, loop = 0, cameramove = 1, dof = 0.69999998807907, fov = 60, time = 8 },
+  ["Blimp Zoom In"] = { shake = 0, exp = 1, loop = 0, cameramove = 1, dof = 0.69999998807907, fov = 60, time = 15 },
+  ["InitialD Rear Wheel Look Forward"] = { shake = 0, exp = 1, loop = 0, cameramove = 1, dof = 0.69999998807907, fov = 60, time = 8 },
+  ["InitialD Front Corner Hood"] = { shake = 0, exp = 1, loop = 0, cameramove = 1, dof = 0.69999998807907, fov = 60, time = 8 },
+  ["InitialD Front Corner Light"] = { shake = 0, exp = 1, loop = 0, cameramove = 1, dof = 0.69999998807907, fov = 60, time = 8 },
+  ["InitialD Rear Corner Light"] = { shake = 0, exp = 1, loop = 0, cameramove = 1, dof = 0.69999998807907, fov = 60, time = 8 },
+  ["Rear Slide"] = { shake = 0, exp = 1, loop = 0, cameramove = 1, dof = 0.69999998807907, fov = 60, time = 8 },
+  ["Rear Rotate"] = { shake = 0, exp = 1, loop = 0, cameramove = 1, dof = 0.69999998807907, fov = 60, time = 8 },
+  ["Movie Cabin"] = { shake = 0, exp = 1, loop = 0, cameramove = 1, dof = 0.69999998807907, fov = 60, time = 8 },
+  ["InitialD Front Lights Left Right Back"] = { shake = 0, exp = 1, loop = 0, cameramove = 1, dof = 0.69999998807907, fov = 60, time = 8 },
+  ["InitialD Rear Lights Left Right Back"] = { shake = 0, exp = 1, loop = 0, cameramove = 1, dof = 0.69999998807907, fov = 60, time = 8 },
+  ["InitialD Rear Leader Pick Up Pace"] = { shake = 0, exp = 1, loop = 0, cameramove = 1, dof = 0.69999998807907, fov = 60, time = 8 },
+  ["InitialD Rear Chaser Catch Up"] = { shake = 0, exp = 1, loop = 0, cameramove = 1, dof = 0.69999998807907, fov = 60, time = 8 },
+  ["InitialD Front Leader Pick Up Pace"] = { shake = 0, exp = 1, loop = 0, cameramove = 1, dof = 0.69999998807907, fov = 60, time = 8 },
+  ["InitialD Front Chaser Catch Up"] = { shake = 0, exp = 1, loop = 0, cameramove = 1, dof = 0.69999998807907, fov = 60, time = 8 },
   
-  
-  ["test"] = { shake = 0, exp = 1, loop = 0, cameramove = 0, dof = 0.69999998807907, fov = 60, time = 3.5 }
+  ["test"] = { shake = 0, exp = 1, loop = 0, cameramove = 1, dof = 0.69999998807907, fov = 60, time = 8 }
 }
